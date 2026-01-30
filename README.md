@@ -27,7 +27,7 @@ Each action triggers a webhook payload sent by GitHub.
 
 ---
 
-## Event Semantics
+## Event Semantics-
 
 The webhook payloads generated from this repository are later transformed into human-readable logs such as:
 
