@@ -7,7 +7,7 @@ These events are sent to a registered webhook endpoint (`webhook-repo`) where th
 
 ---
 
-## Purpose
+## Purpose-
 
 The goal of this repository is to generate GitHub events with **minimal and relevant data** that can be consumed by an external webhook receiver.
 
@@ -15,7 +15,7 @@ This repository itself does not contain any backend or UI logic.
 
 ---
 
-## Supported GitHub Events
+## Supported GitHub Events-
 
 The following GitHub events are enabled for this repository:
 
