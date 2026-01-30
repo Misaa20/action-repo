@@ -15,7 +15,7 @@ This repository itself does not contain any backend or UI logic.
 
 ---
 
-## Supported GitHub Events
+## Supported GitHub Events-
 
 The following GitHub events are enabled for this repository:
 
