@@ -1,84 +1,91 @@
 # action-repo
 
-This repository is created as part of the Developer Assessment task.  
-Its sole purpose is to act as a **dummy GitHub repository** that generates GitHub events using **GitHub Webhooks**.
+This repository acts as the **event source** for the Developer Assessment Task.  
+It is responsible for triggering GitHub webhook events on specific repository actions.
 
-The events triggered in this repository are sent to a webhook endpoint implemented in the `webhook-repo`.
-
----
-
-## Purpose of This Repository
-
-This repository is used only to **generate GitHub events** such as:
-
-- Push
-- Pull Request
-- Merge (via merged pull requests)
-
-No backend or UI logic is implemented here.  
-All processing, storage, and display of events is handled by the `webhook-repo`.
+These events are sent to a registered webhook endpoint (`webhook-repo`) where they are processed and stored in MongoDB.
 
 ---
 
-## GitHub Events Generated
+## Purpose
 
-### 1. Push Event
-Triggered when code is pushed to any branch in this repository.
+The goal of this repository is to generate GitHub events with **minimal and relevant data** that can be consumed by an external webhook receiver.
 
-Example:
-```bash
-git push origin main
-2. Pull Request Event
-Triggered when a pull request is created or closed between branches.
+This repository itself does not contain any backend or UI logic.
 
-Steps:
+---
 
-Create a new branch
+## Supported GitHub Events
 
-Push changes
+The following GitHub events are enabled for this repository:
 
-Open a pull request to another branch
+- **Push**
+- **Pull Request**
+- **Merge** (via merged pull requests)
 
-3. Merge Event (Brownie Points)
-Triggered when a pull request is merged.
+Each action triggers a webhook payload sent by GitHub.
 
-Note: GitHub does not provide a separate merge webhook event.
-A merge is identified using the pull_request webhook payload where:
+---
 
-pull_request.merged == true
-Webhook Configuration
-A GitHub webhook is configured for this repository with the following details:
+## Event Semantics
 
-Payload URL
+The webhook payloads generated from this repository are later transformed into human-readable logs such as:
 
-<public-url>/webhook
-Content Type
+### Push Event
 
-application/json
-Subscribed Events
+{author} pushed to {to_branch} on {timestamp}
 
-Pushes
 
-Pull requests
+### Merge Event
 
-The public URL is exposed using tools like ngrok during local development.
+{author} merged branch {from_branch} to {to_branch} on {timestamp}
 
-How This Repository Works in the Assignment Flow
-Actions (push, pull request, merge) are performed in this repository.
 
-GitHub sends webhook events to the configured endpoint.
+---
 
-The webhook endpoint (in webhook-repo) receives and stores the event data in MongoDB.
+## Webhook Configuration
 
-The UI polls the database every 15 seconds to display the latest repository activity.
+GitHub Webhooks for this repository are configured with:
 
-Related Repository
-webhook-repo
-Contains the Flask webhook receiver, MongoDB integration, and UI for displaying the repository events.
+- **Payload URL**: Webhook endpoint from `webhook-repo`
+- **Content Type**: `application/json`
+- **Events**:
+  - Push events
+  - Pull request events
 
-Notes
-This repository contains no application logic.
+GitHub automatically sends HTTP `POST` requests to the webhook endpoint whenever one of the above actions occurs.
 
-It exists only to trigger GitHub webhook events.
+---
 
-All core implementation is handled in the webhook-repo.
+## How It Works
+
+1. A developer performs an action on this repository
+2. GitHub emits a webhook event
+3. The event is sent to the Flask webhook receiver
+4. The receiver extracts required fields and stores them in MongoDB
+5. The UI polls MongoDB every 15 seconds to display updates
+
+---
+
+## Related Repository
+
+- **webhook-repo**  
+  Contains the Flask-based webhook receiver that:
+  - Handles incoming GitHub webhook events
+  - Stores processed data in MongoDB
+  - Serves data for UI polling
+
+---
+
+## Notes
+
+- No application code is required in this repository
+- This repository exists solely to emit GitHub events
+- All business logic lives in the webhook receiver
+
+---
+
+## Era
+
+Developer Assessment Submission
+
